@@ -22,8 +22,13 @@ void draw() {
 	}
 }
 
-void mousePressed() { // Starts the draw loop when mouse is pressed
+void mouseClicked() { // Starts the draw loop when mouse is pressed
 	loop(); // Starts the loop
+	for(Die dice : allDice) { // Cause all not falling dice to fall
+		if(!dice.falling) {
+			dice.setToFall();
+		}
+	}
 	for(int x = 25; x <= width - 25; x += 30) {
 		for(int y = 25; y <= height - 25 - 100; y += 30) {
 			allDice.add(new Die(x, y));
@@ -35,6 +40,7 @@ class Die { // A single die
 
 	// Die properties
 	float x, y; // Position of the die
+	double velX, velY; // Velocity of the die
 	float deg = 0; // The rotation of the die in degrees
 	float s = 1; // The size of the die
 	float growthRate = 1; // The growth rate of the die
@@ -43,6 +49,7 @@ class Die { // A single die
 
 	// Die states
 	boolean growing = true;
+	boolean falling = false;
 	
 	Die(int argX, int argY) {
 		x = argX;
@@ -62,6 +69,18 @@ class Die { // A single die
 				growing = false;
 			}
 		}
+		if(falling) {
+			x += velX;
+			y += velY;
+			velX *= 0.95;
+			velY += 1;
+		}
+	}
+	void setToFall() { // Set the dice to fall
+		falling = true;
+		// Set the velocity of the die when falling
+		velX = Math.random() * 20 - 10;
+		velY = Math.random() * -10;
 	}
 	void show() { // Displays the die
 		translate(x, y); // Translates the die to position
